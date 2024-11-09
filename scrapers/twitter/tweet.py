@@ -7,7 +7,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 class Tweet:
     def __init__(self, card: WebDriver, driver: WebDriver, actions: ActionChains, scrape_poster_details=False) -> None:
         self.card = card
-        self.error = False
         self.user = self.get_element_text('.//div[@data-testid="User-Name"]//span')
         self.handle = self.get_element_text('.//span[contains(text(), "@")]')
         self.date_time = self.get_element_attribute(".//time", "datetime")
@@ -28,7 +27,7 @@ class Tweet:
         self.following_cnt = self.followers_cnt = "0"
         self.user_id = None
 
-        if scrape_poster_details and not self.error:
+        if scrape_poster_details:
             self.scrape_user_details(driver, actions)
 
         self.tweet = (
@@ -86,5 +85,4 @@ class Tweet:
             element = card.find_element("xpath", xpath)
             return element.get_attribute(attribute) if mode == "attribute" else element.text
         except NoSuchElementException:
-            self.error = True
             return default

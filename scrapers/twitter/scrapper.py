@@ -73,7 +73,7 @@ class TwitterScrapper(AbstractScraper, ABC):
                             if not self.scraper_details["poster_details"]:
                                 self.driver.execute_script("arguments[0].scrollIntoView();", card)
                             tweet = Tweet(card=card, driver=self.driver, actions=self.actions, scrape_poster_details=self.scraper_details["poster_details"])
-                            if tweet and not tweet.error and tweet.tweet and not tweet.is_ad:
+                            if tweet and tweet.tweet and not tweet.is_ad:
                                 self.data.append(tweet.tweet)
                                 added_tweets += 1
                                 self.progress.print_progress(len(self.data), False, 0, no_tweets_limit)
