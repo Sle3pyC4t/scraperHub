@@ -15,6 +15,7 @@ class BinanceListingAnnouncementsScraper(AbstractScraper, ABC):
     def __init__(self, driver: WebDriver):
         self.driver = driver
         self.latest_announcement_link = None
+        self.announcement_list = []
 
     def authenticate(self):
         pass
@@ -31,10 +32,17 @@ class BinanceListingAnnouncementsScraper(AbstractScraper, ABC):
         except NoSuchElementException:
             pass
         sleep(LOADING_INTERVAL)
-        first_announcement_element = (
-            self.driver.find_element('xpath', '//*[@id="app-wrap"]/div[2]/div[2]/div[2]/section/div/div[1]/div[1]/a'))
+        for i in range(1, 21):
+            try:
+                announcement_element = (
+                    self.driver.find_element('xpath', f'//*[@id="app-wrap"]/div[2]/div[2]/div[2]/section/div/div[1]/div[{i}]/a'))
+                self.announcement_list.append(announcement_element.get_attribute('href'))
+            except NoSuchElementException:
+                break
         # get link address from first announcement
-        self.latest_announcement_link = first_announcement_element.get_attribute('href')
+        if len(self.announcement_list) == 0:
+            raise Exception("No announcement found")
+        self.latest_announcement_link = self.announcement_list[0]
 
     def export_data(self):
         pass
